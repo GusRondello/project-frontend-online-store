@@ -6,8 +6,6 @@ class Products extends Component {
   constructor() {
     super();
 
-    this.buttonClick = this.buttonClick.bind(this);
-
     this.state = {
       inputSearch: '',
       products: [],
@@ -21,10 +19,9 @@ class Products extends Component {
     });
   }
 
-  async buttonClick() {
+  buttonClick = async () => {
     const { inputSearch } = this.state;
     const obj = await getProductsFromCategoryAndQuery('', inputSearch);
-    console.log(obj);
     this.setState({
       inputSearch: '',
       products: obj.results,

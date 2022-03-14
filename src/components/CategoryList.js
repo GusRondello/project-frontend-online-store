@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
 import { saveCartItem } from '../services/localStorage';
 import ProductsCard from './ProductsCard';
@@ -66,6 +67,7 @@ class CategoryList extends Component {
         ))}
         {
           objCategory.map((product) => (
+
             <ProductsCard
               key={ product.id }
               title={ product.title }
@@ -74,6 +76,20 @@ class CategoryList extends Component {
               productId={ product.id }
               addToCart={ this.addToCart }
             />
+            <>
+              <ProductsCard
+                key={ product.id }
+                title={ product.title }
+                thumbnail={ product.thumbnail }
+                price={ product.price }
+              />
+              <Link
+                to={ `/shopping-cart/${product.id}` }
+                data-testid="product-detail-link"
+              >
+                Detalhes
+              </Link>
+            </>
           ))
         }
       </div>

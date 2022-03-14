@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Products from '../components/Products';
 import CategoryList from '../components/CategoryList';
+import Products from '../components/Products';
 
 class Home extends Component {
   render() {

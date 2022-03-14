@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
 import ProductsCard from './ProductsCard';
 
@@ -58,12 +59,20 @@ class CategoryList extends Component {
         ))}
         {
           objCategory.map((product) => (
-            <ProductsCard
-              key={ product.id }
-              title={ product.title }
-              thumbnail={ product.thumbnail }
-              price={ product.price }
-            />
+            <>
+              <ProductsCard
+                key={ product.id }
+                title={ product.title }
+                thumbnail={ product.thumbnail }
+                price={ product.price }
+              />
+              <Link
+                to={ `/shopping-cart/${product.id}` }
+                data-testid="product-detail-link"
+              >
+                Detalhes
+              </Link>
+            </>
           ))
         }
       </div>

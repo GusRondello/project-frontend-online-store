@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
+import { saveCartItem } from '../services/localStorage';
 import ProductsCard from './ProductsCard';
 
 class CategoryList extends Component {
@@ -9,6 +10,7 @@ class CategoryList extends Component {
       category: [],
       slcCategory: '',
       objCategory: [],
+      // cartList: [],
     };
   }
 
@@ -26,11 +28,17 @@ class CategoryList extends Component {
      }, this.handleSelectedCategory);
    }
 
+   addToCart = ({ target }) => {
+     const { objCategory } = this.state;
+     const { id } = target;
+     const findObject = objCategory.find((produto) => produto.id === id);
+     saveCartItem(findObject);
+   }
+
   handleSelectedCategory = async () => {
     const { category, slcCategory } = this.state;
     const findSlcCategory = category.find((categoria) => categoria.name === slcCategory);
     const selectedId = findSlcCategory.id;
-    console.log(selectedId);
     const obj = await getProductsFromCategoryAndQuery(selectedId);
     this.setState({
       objCategory: obj.results,
@@ -63,6 +71,8 @@ class CategoryList extends Component {
               title={ product.title }
               thumbnail={ product.thumbnail }
               price={ product.price }
+              productId={ product.id }
+              addToCart={ this.addToCart }
             />
           ))
         }
@@ -72,5 +82,3 @@ class CategoryList extends Component {
 }
 
 export default CategoryList;
-
-/*  */

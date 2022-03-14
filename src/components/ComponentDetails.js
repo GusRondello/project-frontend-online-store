@@ -17,7 +17,6 @@ class ComponentDetails extends Component {
   productsDetails = async () => {
     const { match: { params: { id } } } = this.props;
     const objProducts = await getProducts(id);
-    console.log(objProducts);
 
     this.setState({
       product: objProducts,

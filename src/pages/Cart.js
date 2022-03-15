@@ -22,7 +22,6 @@ class Cart extends Component {
     const { cartList } = this.state;
     const cartItems = readCartItems();
     const productQtn = cartItems.filter((produto) => produto.id === cartList[0].id);
-    console.log(productQtn);
 
     this.setState({
       quantity: productQtn.length,
@@ -31,7 +30,6 @@ class Cart extends Component {
 
   render() {
     const { quantity, cartList } = this.state;
-    console.log(readCartItems());
     console.log(quantity);
     return (
       <div>

@@ -13,17 +13,19 @@ class Cart extends Component {
 
   componentDidMount() {
     const cartItems = readCartItems();
-    this.setState((previosState) => ({
-      cartList: [...previosState.cartList, cartItems],
-    }));
+    this.setState(({
+      cartList: cartItems,
+    }), () => this.qtnProducts());
   }
 
-  qtnProducts = ({ id }) => {
+  qtnProducts = () => {
+    const { cartList } = this.state;
     const cartItems = readCartItems();
-    const productQtn = cartItems.map((produto) => produto.id === id);
+    const productQtn = cartItems.filter((produto) => produto.id === cartList[0].id);
     console.log(productQtn);
+
     this.setState({
-      quantity: cartItems.length,
+      quantity: productQtn.length,
     });
   }
 

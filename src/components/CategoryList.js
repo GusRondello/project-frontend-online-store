@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
-import { saveCartItem } from '../services/localStorage';
+import { readCartItems, saveCartItem } from '../services/localStorage';
 import ProductsCard from './ProductsCard';
 
 class CategoryList extends Component {
@@ -33,7 +33,8 @@ class CategoryList extends Component {
      const { objCategory } = this.state;
      const { id } = target;
      const findObject = objCategory.find((produto) => produto.id === id);
-     saveCartItem(findObject);
+     const saveCar = readCartItems();
+     saveCartItem([...saveCar, findObject]);
    }
 
   handleSelectedCategory = async () => {
@@ -67,21 +68,14 @@ class CategoryList extends Component {
         ))}
         {
           objCategory.map((product) => (
-
-            <ProductsCard
-              key={ product.id }
-              title={ product.title }
-              thumbnail={ product.thumbnail }
-              price={ product.price }
-              productId={ product.id }
-              addToCart={ this.addToCart }
-            />
             <>
               <ProductsCard
                 key={ product.id }
                 title={ product.title }
                 thumbnail={ product.thumbnail }
                 price={ product.price }
+                productId={ product.id }
+                addToCart={ this.addToCart }
               />
               <Link
                 to={ `/shopping-cart/${product.id}` }

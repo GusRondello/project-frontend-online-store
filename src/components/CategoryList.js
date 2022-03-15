@@ -11,7 +11,6 @@ class CategoryList extends Component {
       category: [],
       slcCategory: '',
       objCategory: [],
-      // cartList: [],
     };
   }
 

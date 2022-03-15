@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { readCartItems, removeFromCart } from '../services/localStorage';
+import { readCartItems, removeFromCart, saveCartItem } from '../services/localStorage';
 
 class Cart extends Component {
   constructor() {
@@ -7,7 +7,6 @@ class Cart extends Component {
 
     this.state = {
       cartList: [],
-      quantity: 0,
     };
   }
 
@@ -15,47 +14,66 @@ class Cart extends Component {
     const cartItems = readCartItems();
     this.setState(({
       cartList: cartItems,
-    }), () => this.qtnProducts());
+    }));
   }
 
-  qtnProducts = () => {
-    const { cartList } = this.state;
-    const cartItems = readCartItems();
-    const productQtn = cartItems.filter((produto) => produto.id === cartList[0].id);
+  componentDidUpdate() {
+    readCartItems();
+  }
 
+  addToCart = ({ target }) => {
+    const { cartList } = this.state;
+    const { id } = target;
+    const findObject = cartList.find((produto) => produto.id === id);
+    const saveCar = readCartItems();
+    const cartSaved = saveCartItem([...saveCar, findObject]);
     this.setState({
-      quantity: productQtn.length,
+      cartList: cartSaved,
     });
   }
 
   removeCart = (index) => {
+    const updatedCart = removeFromCart(index);
+    this.setState({
+      cartList: updatedCart,
+    });
+  }
+
+  filterProductsCart = (id) => {
     const { cartList } = this.state;
-    console.log(index);
-    // const { id } = target;
-    // const findArray = cartList.filter((produto) => produto.id === id);
-    // console.log(findArray);
-    removeFromCart(index);
+    const filterProductId = cartList.filter((produto) => produto.id === id);
+    return filterProductId.length;
   }
 
   render() {
-    const { quantity, cartList } = this.state;
+    const { cartList } = this.state;
     return (
       <div>
-        { cartList.length > 0
+        { cartList.length !== 0
           ? cartList.map((produto, index) => (
             <div key={ produto.id }>
               <p data-testid="shopping-cart-product-name">{ produto.title }</p>
               <img src={ produto.thumbnail } alt={ produto.title } />
               <p>{ `R$ ${produto.price}` }</p>
               <p data-testid="shopping-cart-product-quantity">
-                Quantidade:
-                { cartList.length }
+                { this.filterProductsCart(produto.id) }
               </p>
               <button
                 type="button"
+                data-testid="product-decrease-quantity"
                 onClick={ () => this.removeCart(index) }
+                id={ produto.id }
+                // disabled={ itemOnCart }
               >
-                Remover
+                -
+              </button>
+              <button
+                type="button"
+                data-testid="product-increase-quantity"
+                onClick={ this.addToCart }
+                id={ produto.id }
+              >
+                +
               </button>
             </div>
           ))

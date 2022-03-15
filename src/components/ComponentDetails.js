@@ -50,13 +50,14 @@ class ComponentDetails extends Component {
           <div>
             <h3>Avaliações</h3>
             <form>
-              <input placeholder="Email" required />
+              <input placeholder="Email" data-testid="product-detail-email" required />
               <textarea
                 placeholder="Mensagem(opcional)"
                 data-testid="product-detail-evaluation"
               />
               <button
                 type="button"
+                data-testid="submit-review-btn"
               >
                 Avaliar
               </button>

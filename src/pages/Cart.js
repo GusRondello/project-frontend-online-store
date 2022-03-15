@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { readCartItems } from '../services/localStorage';
+import { readCartItems, removeFromCart } from '../services/localStorage';
 
 class Cart extends Component {
   constructor() {
@@ -28,13 +28,21 @@ class Cart extends Component {
     });
   }
 
+  removeCart = (index) => {
+    const { cartList } = this.state;
+    console.log(index);
+    // const { id } = target;
+    // const findArray = cartList.filter((produto) => produto.id === id);
+    // console.log(findArray);
+    removeFromCart(index);
+  }
+
   render() {
     const { quantity, cartList } = this.state;
-    console.log(quantity);
     return (
       <div>
         { cartList.length > 0
-          ? cartList.map((produto) => (
+          ? cartList.map((produto, index) => (
             <div key={ produto.id }>
               <p data-testid="shopping-cart-product-name">{ produto.title }</p>
               <img src={ produto.thumbnail } alt={ produto.title } />
@@ -43,6 +51,12 @@ class Cart extends Component {
                 Quantidade:
                 { cartList.length }
               </p>
+              <button
+                type="button"
+                onClick={ () => this.removeCart(index) }
+              >
+                Remover
+              </button>
             </div>
           ))
           : (

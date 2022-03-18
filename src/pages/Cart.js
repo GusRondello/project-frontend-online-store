@@ -26,14 +26,7 @@ class Cart extends Component {
     const { id } = target;
     const findObject = cartList.find((produto) => produto.id === id);
     const saveCar = readCartItems();
-    const cartSaved = saveCartItem([...saveCar, findObject]);
-    this.setState({
-      cartList: cartSaved,
-    });
-  }
-
-  removeCart = (index) => {
-    const updatedCart = removeFromCart(index);
+    const updatedCart = saveCartItem([...saveCar, findObject]);
     this.setState({
       cartList: updatedCart,
     });
@@ -45,13 +38,27 @@ class Cart extends Component {
     return filterProductId.length;
   }
 
+  removeCartItem = (index) => {
+    const uptatedCart = removeFromCart(index);
+    this.setState((prev) => ({
+      cartList: [...prev.cartList, uptatedCart],
+    }));
+  }
+
   render() {
     const { cartList } = this.state;
+    const reduceCart = cartList.reduce((acc, cur) => {
+      if (acc.some((item) => item.id === cur.id)) {
+        return acc;
+      }
+      acc.push(cur);
+      return acc;
+    }, []);
     return (
       <div>
         { cartList.length !== 0
-          ? cartList.map((produto, index) => (
-            <div key={ produto.id }>
+          ? reduceCart.map((produto, index) => (
+            <div key={ index }>
               <p data-testid="shopping-cart-product-name">{ produto.title }</p>
               <img src={ produto.thumbnail } alt={ produto.title } />
               <p>{ `R$ ${produto.price}` }</p>
@@ -61,7 +68,7 @@ class Cart extends Component {
               <button
                 type="button"
                 data-testid="product-decrease-quantity"
-                onClick={ () => this.removeCart(index) }
+                onClick={ () => this.removeCartItem(index) }
                 id={ produto.id }
                 // disabled={ itemOnCart }
               >

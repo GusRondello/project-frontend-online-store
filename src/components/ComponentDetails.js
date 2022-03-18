@@ -87,8 +87,8 @@ class ComponentDetails extends Component {
           >
             Adicionar ao Carrinho
           </button>
-          <form>
             <h3>Avaliações</h3>
+            <form>
             <input
               placeholder="Email"
               data-testid="product-detail-email"

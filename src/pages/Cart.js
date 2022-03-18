@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { readCartItems } from '../services/localStorage';
+import { readCartItems, removeFromCart, saveCartItem } from '../services/localStorage';
 
 class Cart extends Component {
   constructor() {
@@ -7,7 +7,6 @@ class Cart extends Component {
 
     this.state = {
       cartList: [],
-      quantity: 0,
     };
   }
 
@@ -15,34 +14,74 @@ class Cart extends Component {
     const cartItems = readCartItems();
     this.setState(({
       cartList: cartItems,
-    }), () => this.qtnProducts());
+    }));
   }
 
-  qtnProducts = () => {
-    const { cartList } = this.state;
-    const cartItems = readCartItems();
-    const productQtn = cartItems.filter((produto) => produto.id === cartList[0].id);
+  componentDidUpdate() {
+    readCartItems();
+  }
 
+  addToCart = ({ target }) => {
+    const { cartList } = this.state;
+    const { id } = target;
+    const findObject = cartList.find((produto) => produto.id === id);
+    const saveCar = readCartItems();
+    const updatedCart = saveCartItem([...saveCar, findObject]);
     this.setState({
-      quantity: productQtn.length,
+      cartList: updatedCart,
     });
   }
 
+  filterProductsCart = (id) => {
+    const { cartList } = this.state;
+    const filterProductId = cartList.filter((produto) => produto.id === id);
+    return filterProductId.length;
+  }
+
+  removeCartItem = (index) => {
+    const uptatedCart = removeFromCart(index);
+    this.setState((prev) => ({
+      cartList: [...prev.cartList, uptatedCart],
+    }));
+  }
+
   render() {
-    const { quantity, cartList } = this.state;
-    console.log(quantity);
+    const { cartList } = this.state;
+    const reduceCart = cartList.reduce((acc, cur) => {
+      if (acc.some((item) => item.id === cur.id)) {
+        return acc;
+      }
+      acc.push(cur);
+      return acc;
+    }, []);
     return (
       <div>
-        { cartList.length > 0
-          ? cartList.map((produto) => (
-            <div key={ produto.id }>
+        { cartList.length !== 0
+          ? reduceCart.map((produto, index) => (
+            <div key={ index }>
               <p data-testid="shopping-cart-product-name">{ produto.title }</p>
               <img src={ produto.thumbnail } alt={ produto.title } />
               <p>{ `R$ ${produto.price}` }</p>
               <p data-testid="shopping-cart-product-quantity">
-                Quantidade:
-                { cartList.length }
+                { this.filterProductsCart(produto.id) }
               </p>
+              <button
+                type="button"
+                data-testid="product-decrease-quantity"
+                onClick={ () => this.removeCartItem(index) }
+                id={ produto.id }
+                // disabled={ itemOnCart }
+              >
+                -
+              </button>
+              <button
+                type="button"
+                data-testid="product-increase-quantity"
+                onClick={ this.addToCart }
+                id={ produto.id }
+              >
+                +
+              </button>
             </div>
           ))
           : (
